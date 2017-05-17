@@ -12,7 +12,7 @@ class image(object):
         self.w, self.h = self.img.size
         self.img_array = np.array(self.img)
         
-    def grayscale(self):
+    def grayscale(self): #モノクロ画像変換
         input_pix = self.img.load()
         output_image = Image.new("L", (self.w, self.h))
         output_pix = output_image.load()
@@ -20,19 +20,26 @@ class image(object):
         for x, y in product(range(self.w), range(self.h)):
             r, g, b = input_pix[x, y]
             output_pix[x, y] = int(r*0.2126 + g*0.7152 + b*0.0722)
-        return output_image
+        return output_image #Image型で出力
 
-    def laplacian(self, img):
+    def laplacian(self):
+        img_gray_array = np.array(self.grayscale())
         laplacian_filter =np.array([[1,1,1],[1,-8,1],[1,1,1]])
-        convolved = signal.convolve2d(img, laplacian_filter, 'same')
-        return Image.fromarray(np.uint8(convolved))
+        convolved = signal.convolve2d(img_gray_array, laplacian_filter, 'same')
+        return Image.fromarray(np.uint8(convolved)) #Image型を出力
+    
+    def gausian(self): 
+        img_gray_array = np.array(self.grayscale())
+        gausian_filter = np.array([[1,2,1],[2,4,2],[1,2,1]])/16
+        convolved = signal.convolve2d(img_gray_array, gausian_filter, 'same')
+        return Image.fromarray(np.uint8(convolved)) #Image型を出力
             
-    def image_to_ascii(self, img):
+    def image_to_ascii(self, img): #Image型で渡す
         img_array = np.array(img)
         input_pixel = img.load()
         output_image = Image.new("RGBA", (self.w, self.h), (255,255,255))
         draw = ImageDraw.Draw(output_image)
-        fontsize = 8
+        fontsize = 5
         character = ''
         for y in range(0, self.h, fontsize):
             line = []
@@ -55,17 +62,17 @@ class image(object):
                 line.append(character)
             draw.text((0, y), "".join(line), fill="#000000")
             print("".join(line), end='\n')
-        return output_image
+        return output_image #Image型で出力
     
 
 if __name__ == "__main__":
     filename = 'utaeroastrologo.png'
     image = image(filename)
-    output = image.image_to_ascii(image.laplacian(image.grayscale()))
+    output = image.image_to_ascii(image.laplacian())
     array = np.array(output)
     #sample = image.laplacian(image.grayscale())
-    plt.imshow(array)
+    #plt.imshow(np.array(image.laplacian()))
     #plt.gray()
     #plt.show()
-
+    plt.imshow(output)
 
