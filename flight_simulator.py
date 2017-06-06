@@ -36,7 +36,6 @@ def dynamical_system(x, t, A, U0):
     dx[10] = dX[1]
     dx[11] = dX[2]
     return dx
-    
 # 有次元安定微係数
 STC = {'Xu' : -0.01,
        'Zu' : -0.1,
@@ -104,6 +103,3 @@ ax.set_xlim([-5000, 2000])
 ax.set_ylim([-2000, 5000])
 ax.set_zlim([-5000, 2000])
 plt.show()
-             
-             
-             
