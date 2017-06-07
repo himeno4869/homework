@@ -9,8 +9,8 @@ def max_len_word(words):
     sorted_list = sorted(d.items(),key=lambda x:-x[1])
     print('---longest length words(Top10)---')
     for i in range(10):
-        print(sorted_list[i])
-        
+        print('word: '+sorted_list[i][0])
+        print('length: '+str(sorted_list[i][1]))
     print('''
     ''') 
 
@@ -26,7 +26,10 @@ def times_of_alphabet(words):
                 
     sorted_list = sorted(d.items(),key=lambda x:-x[1])
     print("---letter's number of times(decreasing order)---")
-    print(sorted_list)
+    print('')
+    for i in range(len(sorted_list)):
+        print('letter: '+sorted_list[i][0])
+        print('times: '+str(sorted_list[i][1])+' '+'*'*(sorted_list[i][1]//5000))
     print('''
     ''')
     
