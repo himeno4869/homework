@@ -56,15 +56,27 @@ class Weather(object):
         
     def mean_suntime(self):
         '''月ごとの平均日照時間'''
-        date_list = self.load_date()
-        time_dict = dict()
+        date_list = self.load_date() #日にちを読み込む
+        date_number = dict() #月ごとの日数の辞書配列
+        time_dict = dict() #月ごとの日照時間の合計時間の辞書配列
+        sun_time_list = self.load_suntime()
         for i in range(len(self.file)-1):
-            month = date_list[i].sprit('/')[1]
+            month = int(date_list[i].split('/')[1])
             if month not in time_dict:
-                time_dict[month] = self.load_suntime[i]
+                time_dict[month] = sun_time_list[i]
+                date_number[month] = 1
             else:
-                time_dict[month] =time_dict[month] + self.load_suntime[i]
-        print(time_dict)
+                time_dict[month] =time_dict[month] + sun_time_list[i]
+                date_number[month] = date_number[month] + 1
+                           
+        time_list = sorted(time_dict.items(), key=lambda x: x[0]) #sort
+        date_number_list = sorted(date_number.items(), key=lambda x: x[0])
+        
+        print('各月の平均日照時間')
+        for i in range(12):
+            mean_sun_time = time_list[i][1]/date_number_list[i][1]
+            print(str(i+1) + ' 月の平均日照時間： ' + str(mean_sun_time) + ' [hour]')
+        
         
 if __name__ == "__main__":
     path = 'tokyo-weather-20160601-20170531.csv'
