@@ -1,89 +1,62 @@
 # -*- coding: utf-8 -*-
-import pandas as pd
 
 class Weather(object):
 
     def __init__(self, path):
         self.path = path
-        self.file = open(self.path, encoding='Shift-JIS').readlines()
+        self.file = open(self.path, encoding='Shift-JIS').readlines() #指定されたファイルを開ける
+        self.date_list = [line.split(',')[0] for line in self.file[1:]] #日にちのリストを作成
+        self.maxtemp_list = [float(line.split(',')[1]) for line in self.file[1:]] #最高気温のリストを作成
+        self.mintemp_list = [float(line.split(',')[2]) for line in self.file[1:]] #最低気温のリストを作成
+        self.rain_list = [float(line.split(',')[3]) for line in self.file[1:]] #降水量のリストを作成
+        self.suntime_list = [float(line.split(',')[4]) for line in self.file[1:]] #日照時間のリストを作成
+        self.windspeed_list = [float(line.split(',')[5]) for line in self.file[1:]] #風速のリストを作成
         
-    def load_date(self):
-        list = []
-        for line in self.file[1:]:
-            list.append(line.split(',')[0])
-        return list
-        
-    def load_maxtemp(self):
-        list = []
-        for line in self.file[1:]:
-            list.append(float(line.split(',')[1]))
-        return list
-        
-    def load_mintemp(self):
-        list = []
-        for line in self.file[1:]:
-            list.append(float(line.split(',')[2]))
-        return list
-        
-    def load_rain(self):
-        list = []
-        for line in self.file[1:]:
-            list.append(float(line.split(',')[3]))
-        return list
-        
-    def load_suntime(self):
-        list = []
-        for line in self.file[1:]:
-            list.append(float(line.split(',')[4]))
-        return list    
-    
-    def load_windspeed(self):
-        list = []
-        for line in self.file[1:]:
-            list.append(float(line.split(',')[5]))
-        return list
-        
-    def average(self, function):
+    def average(self, lst):
         '''関数を指定して平均値を表示'''
-        return sum(function)/len(function)
+        return sum(lst)/len(lst)
         
     def heaviest_rainy_day(self):
-        rain_dict = dict()
-        for i in range(len(self.file)-1):
-            rain_dict[self.load_date()[i]] = self.load_rain()[i]
+        '''降水量が最も多かった日にちを表示する関数'''
+        rain_dict = dict((self.date_list[i], self.rain_list[i]) for i in range(len(self.file)-1))
         sorted_list = sorted(rain_dict.items(), key=lambda x: -x[1])
-        print('最大降水量： ' + sorted_list[0][0] + ' ' + str(sorted_list[0][1]) + '[mm]')
+        print('最大降水量： ', sorted_list[0][0], ' ', sorted_list[0][1], '[mm]')
         
     def mean_suntime(self):
         '''月ごとの平均日照時間'''
-        date_list = self.load_date() #日にちを読み込む
         date_number = dict() #月ごとの日数の辞書配列
         time_dict = dict() #月ごとの日照時間の合計時間の辞書配列
-        sun_time_list = self.load_suntime()
         for i in range(len(self.file)-1):
-            month = int(date_list[i].split('/')[1])
+            month = int(self.date_list[i].split('/')[1])
             if month not in time_dict:
-                time_dict[month] = sun_time_list[i]
+                time_dict[month] = self.suntime_list[i]
                 date_number[month] = 1
             else:
-                time_dict[month] =time_dict[month] + sun_time_list[i]
+                time_dict[month] =time_dict[month] + self.suntime_list[i]
                 date_number[month] = date_number[month] + 1
                            
         time_list = sorted(time_dict.items(), key=lambda x: x[0]) #sort
         date_number_list = sorted(date_number.items(), key=lambda x: x[0])
         
         print('各月の平均日照時間')
-        for i in range(12):
-            mean_sun_time = time_list[i][1]/date_number_list[i][1]
-            print(str(i+1) + ' 月の平均日照時間： ' + str(mean_sun_time) + ' [hour]')
-        
+        for i in range(1, len(time_dict)+1):
+            mean_sun_time = time_list[i-1][1]/date_number_list[i-1][1]
+            print(i, ' 月の平均日照時間： ', mean_sun_time, ' [hour]')
+            
+def main():
+    path = 'tokyo-weather-20160601-20170531.csv' #読み取るデータのパスを指定
+    weather = Weather(path)
+    maxtemp_average = weather.average(weather.maxtemp_list)
+    print()
+    mintemp_average = weather.average(weather.mintemp_list)
+    print()
+    print("平均最高気温：", maxtemp_average, ' ℃')
+    print()
+    print("平均最低気温：", mintemp_average, ' ℃')
+    print()
+    weather.heaviest_rainy_day()
+    print()
+    weather.mean_suntime()
         
 if __name__ == "__main__":
-    path = 'tokyo-weather-20160601-20170531.csv'
-    weather = Weather(path)
-    maxtemp_average = weather.average(weather.load_maxtemp())
-    mintemp_average = weather.average(weather.load_mintemp())
-    print("平均最高気温：" + str(maxtemp_average) + ' ℃')
-    print("平均最低気温：" + str(mintemp_average) + ' ℃')
-    weather.heaviest_rainy_day()
-    weather.mean_suntime()
+    main()
