@@ -13,7 +13,7 @@ class Weather(object):
         self.windspeed_list = [float(line.split(',')[5]) for line in self.file[1:]] #風速のリストを作成
         
     def average(self, lst):
-        '''関数を指定して平均値を表示'''
+        '''リストを指定して平均値を算出'''
         return sum(lst)/len(lst)
         
     def heaviest_rainy_day(self):
