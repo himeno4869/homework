@@ -4,25 +4,25 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 
-
-
 def potential(z, a, v0, gamma):
-
-    
 
     return v0*(z+(a**2)/z) + gamma*np.log(z)
 
 def main():
     
-    a = 0.6
+    a = 0.8
 
     v0 = 1.0
 
-    c = 0.5
+    c = 0.7
+    
+    rho = 1
+    
+    rad = np.pi/180
 
-    alfa = 5.0*np.pi/180
+    alfa = 1*rad
 
-    beta = 20*np.pi/180
+    beta = 20*rad
 
     gamma = 4*np.pi*v0*a*np.sin(alfa+beta)
 
@@ -126,6 +126,12 @@ def main():
     cxp = 0
 
     cyp = 0
+    
+    ci = 0
+    
+    x0 = np.array([-0.8, -0.6, -0.4, -0.2, 0, 0.2])
+    
+    m = 0
 
     for i in range(thetar-1):
 
@@ -142,8 +148,23 @@ def main():
         cxp = cxp - cpm*dnx
 
         cyp = cyp - cpm*dny
-
+        
+        ci = ci + cpm*dny*(X[0][i+1]+X[0][i])/2 - cpm*dnx*(Y[0][i+1]+Y[0][i])/2
+                          
+        m = m + (x0-(X[0][i+1]+X[0][i])/2)*cpm*dnx + ((Y[0][i+1]+Y[0][i])/2)*cpm*dny
+        
+    xcp = -ci/cyp
     
+    l = 4*c
+    q = 0.5*rho*(v0**2)*(l**2)
+    
+    cm = m/q
+    
+    print("Cm = " + str(cm))
+        
+
+                          
+    print("xcp = " + str(xcp))
 
     cxp = cxp/(4*c)
 
@@ -153,21 +174,41 @@ def main():
 
     clp = cyp*np.cos(alfa) - cxp*np.sin(alfa)
 
-    
-
     print('Cd = ' + str(cdp))
 
     print('Cl = ' + str(clp))
 
-    
+    plt.figure(figsize=(10,2))
 
+    plt.plot(X[0], Y[0])
     
+    plt.title('wing shape')
 
     plt.figure(figsize=(5,4))
 
+    plt.title('Cp')
+    
     plt.contour(X, Y, f1, 100)
+    
+    plt.plot(X[0], Y[0])
 
     plt.colorbar()
+    
+    plt.figure(figsize=(5,4))
+
+    plt.title('stream line')
+
+    plt.contour(X, Y, zz.imag, 100)
+    
+    plt.plot(X[0], Y[0])
+
+    plt.colorbar()
+    
+    plt.figure(figsize=(5, 4))
+
+    plt.plot(x0, cm)
+    
+    plt.title('cm')
     
 if __name__ == "__main__":
     main()

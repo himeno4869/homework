@@ -5,7 +5,7 @@ import numpy as np
 class Activation:
     
     def __init__(self):
-        self.hoge = 3
+        pass
         
     def relu(self, x):
         y = np.maximum(0, x)
