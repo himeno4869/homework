@@ -40,7 +40,7 @@ class ReLu:
         self.mask = None
         
     def forward(self, x):
-        self.mask = (x <= 0)
+        self.mask = (x<=0)
         out = x.copy()
         out[self.mask] = 0
            
@@ -66,24 +66,25 @@ class sigmoid:
         dx = dout * (1.0 - self.out) * self.out
                     
         return dx
-    
+        
+def softmax(x):
+    if x.ndim == 2:
+        x = x.T
+        x = x - np.max(x, axis=0)
+        y = np.exp(x) / np.sum(np.exp(x), axis=0)
+        return y.T 
+
+    x = x - np.max(x) # オーバーフロー対策
+    return np.exp(x) / np.sum(np.exp(x))
 class SoftmaxWithLoss:
     def __init__(self):
         self.loss = None
         self.y = None
         self.t = None
-        
-    def softmax(self, a):
-        c = np.max(a)
-        exp_a = np.exp(a - c)
-        sum_exp_a = np.sum(exp_a)
-        y = exp_a / sum_exp_a
-        
-        return y
     
     def forward(self, x, t):
         self.t = t
-        self.y = self.softmax(x)
+        self.y = softmax(x)
         self.loss = cross_entropy_error(self.y, self.t)
         
         return self.loss
