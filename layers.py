@@ -76,15 +76,26 @@ def softmax(x):
 
     x = x - np.max(x) # オーバーフロー対策
     return np.exp(x) / np.sum(np.exp(x))
+    
 class SoftmaxWithLoss:
     def __init__(self):
         self.loss = None
         self.y = None
         self.t = None
+        
+    def softmax(self, x):
+        if x.ndim == 2:
+            x = x.T
+            x = x - np.max(x, axis=0)
+            y = np.exp(x) / np.sum(np.exp(x), axis=0)
+            return y.T 
+
+        x = x - np.max(x)
+        return np.exp(x) / np.sum(np.exp(x))
     
     def forward(self, x, t):
         self.t = t
-        self.y = softmax(x)
+        self.y = self.softmax(x)
         self.loss = cross_entropy_error(self.y, self.t)
         
         return self.loss

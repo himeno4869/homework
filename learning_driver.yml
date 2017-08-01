@@ -1,0 +1,6 @@
+layer number : 3 #layerの数を指定
+activator : ReLu #(ReLu, sigmoid)から活性化関数を選択
+activator number : 0 #ReLuなら0、sigmoidなら1を選択
+input data size : 784 #学習データの大きさを選択
+hidden size : 50 #隠れ層の出力サイズの選択
+output size : 10 #回答の種類数を選択(mnistなら10)
