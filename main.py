@@ -8,11 +8,12 @@ from gradient import *
 from collections import OrderedDict
 import yaml
 import matplotlib.pyplot as plt
+import time
 
 class NetWork:
     def __init__(self, weight_init_std = 0.01):
         
-        f = open("learning_driver.yml", "r+")
+        f = open("learning_driver.yml", "r+", encoding='utf-8')
         data = yaml.load(f)
         self.layer_number = int(data['layer number'])
         self.activator = data['activator']
@@ -108,6 +109,8 @@ def main():
     epoch_number = 0
     epoch_number_list = []
     key_list = []
+    
+    print('learning start!!')
     for i in range(network.layer_number):
         key_list.append('W{}'.format(str(i+1)))
         key_list.append('b{}'.format(str(i+1)))
@@ -136,6 +139,58 @@ def main():
             print('train data accuracy : ' + str(train_acc))
             print('test data accuracy : ' + str(test_acc))
             print()
+    
+    
+
+    test_acc_max = max(test_acc_list)
+    if test_acc_max > 0.9:
+        print('recognition accuracy is larger than 90%....')
+        time.sleep(2)
+        print('Learning finished successfully!!!')  
+        
+    print()
+    print('--------test start--------')
+    
+    random_data_number = np.random.choice(train_size, 1)
+    random_data = x_train[random_data_number]
+    random_data_reshape = np.resize(random_data, (28, 28))
+    answer_array = t_train[random_data_number]
+    answer = np.argmax(answer_array)
+    
+    character = ''
+    for y in range(28):
+        line = ''
+        for x in range(28):
+            gray = random_data_reshape[y][x]
+            if gray > 0.5:
+                character = "W"
+            elif gray > 0:
+                character = "'"
+            elif gray == 0:
+                character = " "
+            line += character
+        print(line)
+        
+    print('(This number is shown in ascii style)')
+    time.sleep(2.0)
+    
+    predict_answer = np.argmax(network.predict(random_data))
+    print('I think that this image shows ' + str(predict_answer) + '.')
+    
+    your_answer = input("Which number do you predict? ")
+    print('Answer is ' + str(answer) + '.')
+    if int(your_answer) == answer:
+        if predict_answer == answer:
+            print('We answered successfully!')
+        else:
+            print('Oops... I lost you... I have to study more deeply...')
+    else:
+        if predict_answer == answer:
+            print("I'm smarter than you! Study harder for entrance exam of graduate school!(;;)")
+        else:
+            print("We shall not pass the entrance exam of graduate school...(;;)")
+            
+    time.sleep(3.0)
             
     plt.figure(1)
     plt.subplot(2,1,1)
@@ -143,9 +198,12 @@ def main():
     plt.title('Train Accuracy')
     plt.subplot(2,1,2)
     plt.plot(epoch_number_list, test_acc_list)
-    plt.title('Test Accuracy')        
-            
+    plt.subplots_adjust(wspace=1, hspace=1)
+    plt.title('Test Accuracy')  
+    
+    plt.figure(2)
+    plt.imshow(random_data_reshape)
+    plt.title('Test figure')
+    
 if __name__ == "__main__":
     main()
-        
-

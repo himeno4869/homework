@@ -1,4 +1,4 @@
-layer number : 3 #layerの数を指定
+﻿layer number : 3 #layerの数を指定
 activator : ReLu #(ReLu, sigmoid)から活性化関数を選択
 activator number : 0 #ReLuなら0、sigmoidなら1を選択
 input data size : 784 #学習データの大きさを選択
