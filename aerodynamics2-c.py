@@ -25,7 +25,7 @@ def main():
         u[0][j] = v0
         v[0][j] = 0
          
-         
+    #calculation of velocity
     for i in range(nx-1):
         u[i][0] = 0
         v[i][0] = 0
@@ -43,7 +43,7 @@ def main():
             v[i+1][j+1] = v[i+1][j]-(dudx1+dudx2)*dy/2.0
             
     u[nx-1][ny] = 20
-     
+
     #calculation of the boundary layer
     boundary_layer = np.zeros_like(u[:, 0])
     for i in range(nx):
@@ -79,8 +79,47 @@ def main():
     
         
     #plot
+    x = np.arange(0, nx)*dx
+    y = np.arange(0, ny+1)*dy
     plt.style.use('ggplot')
-    plt.plot(np.arange(0, nx)*dx, thick_e)
+    
+    #velocity at the trailing edge
+    plt.subplot(2, 3, 1)
+    plt.title('velocity')
+    plt.xlabel('y')
+    plt.plot(y, u[nx-1])
+    
+    #boundary layer
+    plt.subplot(2, 3, 2)
+    plt.title('boundary layer')
+    plt.xlabel('x')
+    plt.plot(x, boundary_layer)
+    
+    #displacement thickness
+    plt.subplot(2, 3, 3)
+    plt.title('displacement thickness')
+    plt.xlabel('x')
+    plt.plot(x, thick_d)
+    
+    #momentum thickness
+    plt.subplot(2, 3, 4)
+    plt.title('momentum thickness')
+    plt.xlabel('x')
+    plt.plot(x, thick_m)
+    
+    #energy thickness
+    plt.subplot(2, 3, 5)
+    plt.title('energy thickness')
+    plt.xlabel('x')
+    plt.plot(x, thick_e)
+    
+    #viscosity efficiency at wall
+    plt.subplot(2, 3, 6)
+    plt.title('viscosity efficiency')
+    plt.xlabel('x')
+    plt.plot(x, Cf)
+    
+    plt.tight_layout()
     
     
 if __name__ == "__main__":
