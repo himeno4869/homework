@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 def main():
+    
+    #initialization
     rho0 = 1.225
     t0 = 293.0
     visc = 1.458e-6*(t0**1.5)/(t0+110.4)
@@ -49,7 +51,7 @@ def main():
     for i in range(nx):
         for j in range(ny+1):
             if u[i][j] > 0.995*v0:
-                boundary_layer[i] = j
+                boundary_layer[i] = j*dy
                 break
     
     #calculation of the efficiency of viscosity
@@ -82,45 +84,74 @@ def main():
     x = np.arange(0, nx)*dx
     y = np.arange(0, ny+1)*dy
     plt.style.use('ggplot')
+    #plt.title('velocity')
+    #plt.xlabel('y')
+    #plt.plot(u[nx-1], y)
     
+    #integral equation
+    Rex = rho0*v0*x/visc
+    boundary_layer_i = 5.2*x/Rex**0.5
+    thick_d_i = 1.72*x/Rex**0.5
+    thick_m_i = 0.664*x/Rex**0.5
+    
+    '''
+    plt.title('viscosity efficiency')
+    plt.xlabel('x')
+    plt.plot(x, Cf)
+    '''
+    
+    plt.title('(_i) means integral equation')
+    plt.plot(x, boundary_layer, 'b')
+    plt.plot(x, thick_d, 'g')
+    plt.plot(x, thick_m, 'r')
+    plt.plot(x, thick_e, 'c')
+    plt.plot(x, boundary_layer_i, 'k')
+    plt.plot(x, thick_d_i, 'm')
+    plt.plot(x, thick_m_i, 'y')
+
+    plt.legend(['boundary layer', 'displacement thickness', 'momentum thickness', 'energy thickness', 'boundary layer_i', 'displacement thickness_i', 'momentum thickness_i'])
+    
+    '''    
     #velocity at the trailing edge
-    plt.subplot(2, 3, 1)
+    plt.subplot(6, 1, 1)
     plt.title('velocity')
     plt.xlabel('y')
     plt.plot(y, u[nx-1])
     
     #boundary layer
-    plt.subplot(2, 3, 2)
+    plt.subplot(6, 1, 2)
     plt.title('boundary layer')
     plt.xlabel('x')
     plt.plot(x, boundary_layer)
     
     #displacement thickness
-    plt.subplot(2, 3, 3)
+    plt.subplot(6, 1, 3)
     plt.title('displacement thickness')
     plt.xlabel('x')
     plt.plot(x, thick_d)
     
     #momentum thickness
-    plt.subplot(2, 3, 4)
+    plt.subplot(6, 1, 4)
     plt.title('momentum thickness')
     plt.xlabel('x')
     plt.plot(x, thick_m)
     
     #energy thickness
-    plt.subplot(2, 3, 5)
+    plt.subplot(6, 1, 5)
     plt.title('energy thickness')
     plt.xlabel('x')
     plt.plot(x, thick_e)
     
     #viscosity efficiency at wall
-    plt.subplot(2, 3, 6)
+    plt.subplot(6, 1, 6)
     plt.title('viscosity efficiency')
     plt.xlabel('x')
     plt.plot(x, Cf)
+
     
     plt.tight_layout()
-    
+'''    
+       
     
 if __name__ == "__main__":
     main()
